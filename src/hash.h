@@ -8,6 +8,10 @@
 extern "C" {
 #endif
 
+typedef uint32_t    HASH_VAL;
+typedef uint16_t    HASH_KEY_LEN;
+#define HASH_KEY_MAX_LEN    UINT16_MAX
+
 #define hashsize(n) ((unsigned long int)1<<(n))
 #define hashmask(n) (hashsize(n)-1)
 

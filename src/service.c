@@ -4,88 +4,93 @@
 #include "hash.h"
 #include "logging.h"
 #include "service.h"
+#include "service.h"
 
-service_t* service_init(char *name)
+void service_free(void *arg)
 {
+    service_t *service = (service_t*) arg;
+    if(service == NULL);
+}
+
+hashtable_t* service_ht_init()
+{
+    hashtable_t *table = hashtable_init(SERVICE_POWER_FACTOR, NULL, service_free);
+
+    if(table == NULL)
+        return NULL;
+}
+
+service_t* service_set(hashtable_t *table, char *name, service_mothod method, uint16_t num_all_nodes, service_node_t *node_arr[])
+{
+    hashtable_data_t *data = hashtable_get(table, name);
+
+    if(data != NULL)
+        return NULL;
+
     service_t *service = calloc(sizeof(service_t), 1);
-    service->name = name;
-    service->len  = strlen(name);
+    if(service == NULL)
+        return NULL;
+
+    service->name           = name;
+    service->len            = strlen(name);
+    service->method         = method;
+    service->num_all_nodes  = num_all_nodes;
+
+    int i;
+    service_node_t *snode, *sprev;
+
+    for(i = 0; i < num_all_nodes; i++)
+    {
+        snode = node_arr[i];
+
+        if(service->all_next == NULL)
+        {
+            service->all_next = snode;
+        }else
+        {
+            sprev->all_next = snode;
+        }
+
+        sprev = snode;
+    }
+
+    data = hashtable_data_init(name, (void *) service);
+
+    if(data == NULL)
+    {
+        service_free(service);
+        return NULL;
+    }
+
+    hashtable_set(table, data);
+
     return service;
 }
 
-service_t** service_index_init(int power)
+service_t* service_get(hashtable_t *table, char *name)
 {
-    service_t** idx = calloc(hashsize(power), sizeof(void *));
-
-    if(idx == NULL)
-    {
-        log_err(__FILE__, __LINE__, "Cannot init service index.");
-        return NULL;
-    }
-
-    return idx;
-}
-
-service_t* service_find2(service_t** idx, int power, char *svc_name, size_t svc_len)
-{
-    if(idx == NULL || svc_name == NULL || svc_len == 0)
+    if(table == NULL)
     {
         return NULL;
     }
 
-    uint32_t hv = hash(svc_name, svc_len, 0);
-
-    service_t *service = idx[hv & hashmask(power)];
-
-    while(service != NULL)
-    {
-        if(strncmp(service->name, svc_name, svc_len) == 0)
-        {
-            return service;
-        }
-
-        service = service->next;
-    }
-    
-    return NULL;
-}
-
-service_t* service_find(service_t** idx, int power, char *svc_name)
-{
-    return service_find2(idx, power, svc_name, strlen(svc_name));
-}
-
-service_t* service_add(service_t** idx, int power, service_t* svc)
-{
-    if(idx == NULL || svc == NULL)
+    if(name == NULL)
     {
         return NULL;
     }
 
-    uint32_t hv = hash(svc->name, strlen(svc->name), 0);
+    hashtable_data_t *data = hashtable_get(table, name);
 
-    service_t *service = idx[hv & hashmask(power)];
-
-    if(service == NULL)
+    if(data == NULL)
     {
-        idx[hv & hashmask(power)] = svc;
-        return svc;
+        return NULL;
     }
 
-    service_t *oservice = NULL;
-
-    while(service != NULL)
-    {
-        if(strncmp(service->name, svc->name, svc->len) == 0)
-        {
-            return NULL;
-        }
-
-        oservice = service;
-        service = service->next;
-    }
-
-    oservice->next = svc;
-
-    return svc;
+    return (service_t*) data->data;
 }
+
+void service_del(hashtable_t *table)
+{
+    // need to implement
+}
+

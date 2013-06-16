@@ -8,6 +8,8 @@ request_t* request_init(int flag, char *line)
     return req;
 }
 
+request2_t* request2_init(
+
 void request_free(request_t *req)
 {
     if(req == NULL)

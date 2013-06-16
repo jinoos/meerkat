@@ -2,11 +2,15 @@
 #define _SERVICE_H_
 
 #include "meerkat.h"
+#include "hashtable.h"
 
-service_t* service_init(char *name);
-service_t** service_index_init(int power);
-service_t* service_find2(service_t** idx, int power, char *svc_name, size_t svc_len);
-service_t* service_find(service_t** idx, int power, char *svc_name);
-service_t* service_add(service_t** idx, int power, service_t* svc);
+#define SERVICE_POWER_FACTOR    8
+
+void service_free(void *arg);
+
+hashtable_t* service_ht_init();
+service_t* service_set(hashtable_t *table, char *name, service_mothod method, uint16_t num_all_nodes, service_node_t *node_arr[]);
+service_t* service_get(hashtable_t *table, char *name);
+void service_del(hashtable_t *table);
 
 #endif // _SERVICE_H_

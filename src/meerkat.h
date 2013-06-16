@@ -61,6 +61,13 @@ typedef struct _server
 
 typedef struct _request request_t;
 
+typedef enum _clinet_type
+{
+    NORMAL,
+    SETTER,
+    SENTINEL
+} client_type;
+
 typedef struct _client
 {
     int                     socket;
@@ -81,13 +88,81 @@ typedef struct _request
     char    *key;
 } request_t;
 
+typedef enum _req_flag
+{
+    PING,
+    GET_NODE,
+    GET_ALLNODES,
+    GET_ALIVENODES,
+    GET_SERVICES,
+    GET_STATUS,
+    SET_SERVICE,
+    SET_SENTINEL,
+    QUIT
+} req_flag_t;
+
+typedef struct _req_data req_data_t;
+
+typedef struct _req_data
+{
+    char        *data;
+    req_data_t  *next;
+
+} req_data_t;
+
+typedef struct _req
+{
+    int         flag;
+    int         num_of_rows;
+    req_data_t  *data;
+
+} req_t;
+
+typedef enum _service_method
+{
+    ROUND_ROBIN,
+    KETAMA
+} service_mothod;
+
+typedef struct _service_node service_node_t;
+
 typedef struct _service
 {
     char        *name;
     size_t      len;
-    service_t   *next;
-    service_t   *all_next;
+
+    service_mothod  method;     // rr or ketama
+    
+    uint64_t    num_reqs;
+
+    uint16_t    num_all_nodes;
+    service_node_t  *all_next;
+
+    uint16_t    num_alive_nodes;
+    service_node_t  *alive_next;
+
 } service_t;
+
+typedef enum _service_node_status
+{
+    DEAD,
+    ALIVE,
+} service_node_status;
+
+typedef struct _service_node
+{
+    char        *nickname;
+    char        *ipport;
+    int         weight;     // only use on ketama hashing method
+
+    service_t   *service;
+
+    service_node_status status;
+
+    service_node_t  *all_next;
+    service_node_t  *alive_next;
+} service_node_t;
+
 
 // for request
 #define REQ_CMD_PING            "*PING"                 // no required any more

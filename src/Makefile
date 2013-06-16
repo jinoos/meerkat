@@ -1,6 +1,6 @@
 .SUFFUXES : .h .c .o
 
-OBJS = meerkat.o client.o server.o logging.o message.o request.o meerkat_server.o hash.o service.o
+OBJS = meerkat.o client.o server.o logging.o message.o request.o meerkat_server.o hash.o service.o hashtable.o
 
 CC = gcc
 CFLAGS = -Wall -g -c 
