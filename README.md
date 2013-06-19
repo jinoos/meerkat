@@ -14,7 +14,17 @@ A client connects to Meerkat server via TCP connection and PORT 7758 basically. 
 
 ### Message transmission
 
-All most of messages send from client side to Meerkat server (Request), and then server returns to each clients (Response). When client establishs connection with server, client receives a response message from server without request message.
+All most of messages send from client side to Meerkat server (Request), and then server returns to each clients (Response). When client establishs connection with server, client receives a response message from server without request message once.
+
+    +WELCOME<CR><LF>
+    
+Most of the time, a client receives WELCOME response. Only when server reaches number of connections to MAX_CONNECTIONS, then client will be received as below ERROR message as 
+
+    +ERROR
+    989
+    Server's having too many connections. (MAX_CONNECTIONS:XXXXX)
+
+Please see [Error Messsages]
 
 ### Message format
 
