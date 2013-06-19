@@ -24,7 +24,7 @@ Most of the time, a client receives WELCOME response. Only when server reaches n
     989
     Server's having too many connections. (MAX_CONNECTIONS:XXXXX)
 
-Please see [Error Messsages]
+Please see [Error Messsages](https://github.com/jinoos/meerkat/)
 
 ### Message format
 
