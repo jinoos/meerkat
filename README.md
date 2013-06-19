@@ -37,7 +37,7 @@ A response message also has that kind of prefix "+", so response message format 
 
 #### Array format
 
-Some meesages require to contain array type data, that will be included a number data what number of array data.
+Some meesages require to contain array type data, that will be included a number what number of array data. See below example
 
     +NODES<CR><LF>
     3<CR><LF>                   # <---  
